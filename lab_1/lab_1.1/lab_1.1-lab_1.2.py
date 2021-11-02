@@ -37,7 +37,7 @@ for i in df.itertuples():
     defs[3].append(preprocessing(i[5]))
 
 # calcolo similarità
-similartys = []
+similarties = []
 for def_list in defs:
     result = 0
     count = 0
@@ -45,14 +45,23 @@ for def_list in defs:
         for j in range(i+1, len(def_list)):
             result += similarity_score(def_list[i], def_list[j])
             count=count+1
-    similartys.append(result/count)
+    similarties.append(result/count)
 
-# stampa similarità
-print("courage = " + str(similartys[0]))
-print("paper = " + str(similartys[1]))
-print("apprehension = " + str(similartys[2]))
-print("sharpner = " + str(similartys[3]))
+# stampa similarità lab_1.1
+print("courage = " + str(similarties[0]))
+print("paper = " + str(similarties[1]))
+print("apprehension = " + str(similarties[2]))
+print("sharpner = " + str(similarties[3]))
 
-
-
-
+# inizio lab_1.2, spiegazione similarità
+print("\nSpiegazione")
+for def_list in defs:
+    words = {}
+    for definizione in def_list:
+        for word in definizione:
+            if words.keys().__contains__(word):
+                words[word] += 1
+            else:
+                words[word] = 1
+    ordered = dict(sorted(words.items(), key=lambda item: item[1], reverse=True))
+    print(list(ordered.items())[:5])
