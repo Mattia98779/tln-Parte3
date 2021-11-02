@@ -47,7 +47,7 @@ for def_list in defs:
             count=count+1
     similarties.append(result/count)
 
-# stampa similarità lab_1.1
+# stampa similarità lab_1.1-lab_1.2
 print("courage = " + str(similarties[0]))
 print("paper = " + str(similarties[1]))
 print("apprehension = " + str(similarties[2]))
