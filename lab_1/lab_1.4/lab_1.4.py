@@ -1,9 +1,16 @@
 from nltk.corpus import brown
-a = ["give", "gives", "gave"]
+import spacy
+nlp = spacy.load('en_core_web_sm')
+a = ["give", "gives", "gave", "given", "giving"]
 l = brown.sents()
-c=0
+sentens = []
 for s in l:
     if s != None:
-        if a[0] in s or a[1] in s or a[2] in s:
-            c+=1
-print(c)
+        if any(verb in s for verb in a):
+            sentens.append(s)
+
+doc = nlp(str(sentens[0]))
+for sent in doc:
+    for token in sent:
+        if token.is_alpha:
+            print (token.orth_, token.tag_, token.head.lemma_)
