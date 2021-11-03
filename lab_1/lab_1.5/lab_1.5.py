@@ -2,20 +2,6 @@ import pandas as pd
 from nltk.corpus import wordnet as wn
 import re
 
-def create_context(words):
-    context = []
-    for w in words:
-        for s in wn.synsets(w):
-            for glos in s.definition().split():
-
-                context += context + re.sub(r"[^a-zA-Z0-9]", "", glos).split()
-                pippo = len(wn.synsets(glos))
-                for gs in wn.synsets(glos):
-                    app = gs.lemmas()
-                    app = list(map(lambda x: x.name(), app))
-                    context += app
-    return context
-
 def hyponyms_lvl(synset, lvl):
     hyponyms = []
     if lvl == 0:
@@ -27,7 +13,7 @@ def hyponyms_lvl(synset, lvl):
             hyponyms+=hyponyms_lvl(s, lvl-1)
     return hyponyms
 
-def filter_phrase (frase):
+def create_context (frase):
     frase = list(set(frase).difference(no_words))
     ctx_lemmas = []
     for w in frase:
@@ -38,15 +24,15 @@ def filter_phrase (frase):
 def lesk(candidates, context):
     best_sense = candidates[0]
     max_overlap = 0
-    context = set(create_context(context))
+    context = set(context)
     for sense in candidates:
         signature = []
-        for example in sense.examples():
-            signature = signature + example.split()
+        #for example in sense.examples():
+        #    signature = signature + example.split()
         for glos in sense.definition().split():
             signature = signature + re.sub(r"[^a-zA-Z0-9]","",glos).split()
         signature = set(signature)
-        filtered = filter_phrase(signature)
+        filtered = create_context(signature)
         overlap = len(filtered.intersection(context))
         if overlap > max_overlap:
             max_overlap = overlap
@@ -99,6 +85,6 @@ for def_list in defs:
     app_synsets = set(app_synsets)
     candidate_synsets = []
     for s in app_synsets:
-        candidate_synsets += hyponyms_lvl(s, 1)
+        candidate_synsets += hyponyms_lvl(s, 5)
     sense = lesk(candidate_synsets, list(ordered.keys())[:5])
     print(sense)
