@@ -7,7 +7,7 @@ from spacy.symbols import nsubj, VERB
 nlp = spacy.load('en_core_web_sm')
 transitive_verb =['make','made','making','makes']
 l = brown.sents()
-sentens = []
+sentences = []
 for s in l:
     if s != None:
         if any(verb in s for verb in transitive_verb):
