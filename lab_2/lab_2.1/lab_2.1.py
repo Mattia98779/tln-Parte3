@@ -25,6 +25,8 @@ def rogue(filtered, gold):
 
 def get_vect_from_term(term):
     vets = []
+    if term not in term_to_id.keys():
+        return vets
     all_ids = term_to_id[term]
     for id in all_ids:
         if id in dict_vet.keys():
@@ -74,6 +76,7 @@ def unify_vet (vettori):
                 print(2)
             vet.append(el)
     #prendo la seconda parte del termine nasari e ordino in base al suo valore
+    vet = list(set(vet))
     vet.sort(key= lambda x: float(x.split("_")[1]),reverse=True)
     return vet
 
@@ -126,7 +129,7 @@ dict_vet = {}
 term_to_id = {}
 file6 = open('utils/term_to_id', encoding="utf8")
 lines6 = file6.readlines()
-word = "###"
+word = lines6[0]
 ids = []
 for l in lines6:
     if l[0]=="#":
@@ -138,7 +141,7 @@ for l in lines6:
 
 
 # 1=title - 2=cue word
-metodo_riassunto = 1
+metodo_riassunto = 2
 
 for l in Lines2:
     elems = l.split(';')
@@ -160,8 +163,10 @@ for text in testi:
             paragraph.append(l)
     if metodo_riassunto==1:
         topic = create_context_titolo(titolo)
+        print("The topic is:")
     else:
         topic = create_context(selectTopic(paragraph))
+        print("The topic is:")
     val = 0
     final = []
 
