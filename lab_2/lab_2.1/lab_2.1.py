@@ -23,6 +23,16 @@ def rogue(filtered, gold):
     rogue = len(set(gold_terms).intersection(candidate_terms)) / len(set(gold_terms))
     return rogue
 
+def get_vect_from_term(term):
+    vets = []
+    all_ids = term_to_id[term]
+    for id in all_ids:
+        if id in dict_vet.keys():
+            vets.append(dict_vet[id])
+    return vets
+
+
+
 def weigthed_overlap(v1,v2):
     v1_filt = list(map(lambda x: x.split("_")[0], v1))
     v2_filt = list(map(lambda x: x.split("_")[0], v2))
@@ -81,10 +91,7 @@ def create_context (frase):
     frase = list(set(frase).difference(no_words))
     vettori = []
     for w in frase:
-        dup_vet = []
-        if wn.morphy(w) in dict_vet:
-            for elem in dict_vet[wn.morphy(w)]:
-                dup_vet.append(elem)
+        dup_vet = get_vect_from_term(w)
         if (len(dup_vet)>1):
             vettori.append(disambiguazione(frase, dup_vet))
         elif (len(dup_vet)==1):
@@ -116,16 +123,27 @@ for line in Lines3:
     no_words.append(line[:len(line)-1])
 no_words = set(no_words)
 dict_vet = {}
+term_to_id = {}
+file6 = open('utils/term_to_id', encoding="utf8")
+lines6 = file6.readlines()
+word = "###"
+ids = []
+for l in lines6:
+    if l[0]=="#":
+        term_to_id[word]=ids
+        word = l[1:len(l)-1]
+        ids = []
+    else:
+        ids.append(l[:len(l)-1])
+
+
 # 1=title - 2=cue word
-metodo_riassunto = 2
+metodo_riassunto = 1
 
 for l in Lines2:
     elems = l.split(';')
     elems = list(filter(lambda a: a != '' and a !='\n', elems))
-    if(elems[1].lower() in dict_vet):
-        dict_vet[elems[1].lower()].append([elems[0]] + elems[2:])
-    else:
-        dict_vet[elems[1].lower()] = [[elems[0]] +elems[2:]]
+    dict_vet[elems[0]]= elems[2:]
 
 for text in testi:
     titolo = []
